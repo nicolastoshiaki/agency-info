@@ -54,33 +54,37 @@ for index, row in df_prop.iterrows():
     A_ajust = trata_A(A_inserida) 
     lista_A.append(A_ajust) 
 
-for item in lista_A: 
-    if pd.isna(item): 
-        lista_A.remove(item) 
-    if len(lista_A) == 0: 
-        print('Não há A a serem consultadas') 
-        sys.exit() 
+lista_A2 = [item for item in lista_A if str(item) != 'nan'] 
+        
+if len(lista_A2) == 0: 
+    print('Não há A a serem consultadas') 
+    sys.exit() 
+        
+
         
 # Cria e Trata a Lista de E-mails --------------------------------------------------------------------- 
 lista_email = [] 
 for index, row in df_prop.iterrows(): 
     email_inserido = str(row['EMAILS']) 
     lista_email.append(email_inserido) 
-    lista_email2 = [item for item in lista_email if str(item) != 'nan'] 
-    if len(lista_email2) == 0: 
-        print('Não há e-mail inserido na planilha') 
-        sys.exit() 
+    
+lista_email2 = [item for item in lista_email if str(item) != 'nan'] 
+
+if len(lista_email2) == 0: 
+    print('Não há e-mail inserido na planilha') 
+    sys.exit() 
         
 destinatarios = '; '.join(lista_email2) 
 
 # Cria e Trata a Lista de B ------------------------------------------------------------------ 
 lista_B = [] 
-for item in lista_A:
+for item in lista_A2:
     df = pd.read_sql('SELECT API_KEY FROM DATABSE_TABLE WITH(NOLOCK) WHERE A = {}'.format(item), engine) 
     lista_doc = df.values.tolist() 
     B_ajustado = trata_B(lista_doc) 
     lista_B.append(B_ajustado) 
-    df_csv = pd.read_csv(r'path\File_with_agency_information.csv', sep=';', encoding='latin-1') 
+
+df_csv = pd.read_csv(r'path\File_with_agency_information.csv', sep=';', encoding='latin-1') 
     
 lista_status_atendimento = [] 
 lista_data_atendimento = [] 
@@ -146,7 +150,7 @@ lista_bairro.append(bairro)
 lista_cep.append(cep) 
 
 # Monta o dataframe final que vai no corpo do e-mail ---------------------------------------------------------- 
-dados = list(zip(lista_A, lista_B, lista_status_atendimento, lista_data_atendimento, lista_atendente, lista_nome_agencia, lista_C, lista_uf, lista_municipio, lista_endereco_agencia, lista_complem_end_agencia, lista_num_endereco, lista_bairro, lista_cep)) 
+dados = list(zip(lista_A2, lista_B, lista_status_atendimento, lista_data_atendimento, lista_atendente, lista_nome_agencia, lista_C, lista_uf, lista_municipio, lista_endereco_agencia, lista_complem_end_agencia, lista_num_endereco, lista_bairro, lista_cep)) 
 
 df_final = pd.DataFrame(dados, columns=['A', 'B', 'Status_Atendimento', 'Data_Atendimento', 'Atendente', 'Nome_Agência', 'C', 'UF', 'Municipio', 'Endereco_Agência', 'Complemento_Endereco_Agência', 'Num_Endereco', 'Bairro', 'CEP']) 
 
@@ -159,7 +163,7 @@ email = outlook.CreateItem(0)
 # Configura as informações do seu e-mail 
 email.To = destinatarios 
 email.Subject = "E-mail automático - Info Agências de A" 
-email.HTMLBody = """ <p>Prezado(a),</p> Segue abaixo os dados das agências vinculadas as A existentes na planilha.</p> <p>{}</p> <p>Atenciosmente,</p> <p>GERENCIA - DIRETORIA</p> """.format(df_final.to_html()) 
+email.HTMLBody = """ <p>Prezado(a),</p> Segue abaixo os dados das agências vinculadas as A existentes na planilha.</p> <p>{}</p> <p>Atenciosamente,</p> <p>GERENCIA - DIRETORIA</p> """.format(df_final.to_html()) 
 email.Send() 
 
 # Deleta os registros da planilha ------------------------------------------------------------------------------ 
