@@ -42,7 +42,7 @@ engine = create_engine(connection_url)
 # Declara credenciais da API ------------------------------------------------------------------ 
 contrato = 123456 
 login = 'login_exemple' 
-senha = 'password_exemplo' 
+senha = 'password_exemple' 
 
 df_prop = pd.read_excel(r'path\file.xlsx') 
 
@@ -118,36 +118,36 @@ for item in lista_B:
         api_request = requests.get('api_link/contrato/{}/B/{}'.format(contrato, item), auth=(login, senha)) 
         retorno = api_request.json() 
         
-mcu = retorno['identificadorAgencia'].strip() 
-lista_status_atendimento.append(retorno['statusAtendimento'].strip()) 
-lista_data_atendimento.append(retorno['dataAtendimento'].strip()) 
-lista_atendente.append(retorno['identificadorAtendente'].strip()) 
-lista_nome_agencia.append(retorno['nomeAgencia'].strip()) 
-lista_C.append(mcu) 
-lista_uf.append(retorno['uf'].strip()) 
-lista_municipio.append(retorno['municipio'].strip()) 
-endereco_agencia = df_csv.loc[df_csv['MCU'] == int(mcu), 'ENDERECO'].iloc[0] 
-complem_end_agencia = df_csv.loc[df_csv['MCU'] == int(mcu), 'COMPL_ENDERECO'].iloc[0] 
-num_endereco = df_csv.loc[df_csv['MCU'] == int(mcu), 'Número'].iloc[0] 
-bairro = df_csv.loc[df_csv['MCU'] == int(mcu), 'BAIRRO'].iloc[0] 
-cep = df_csv.loc[df_csv['MCU'] == int(mcu), 'CEP'].iloc[0] 
+        mcu = retorno['identificadorAgencia'].strip() 
+        lista_status_atendimento.append(retorno['statusAtendimento'].strip()) 
+        lista_data_atendimento.append(retorno['dataAtendimento'].strip()) 
+        lista_atendente.append(retorno['identificadorAtendente'].strip()) 
+        lista_nome_agencia.append(retorno['nomeAgencia'].strip()) 
+        lista_C.append(mcu) 
+        lista_uf.append(retorno['uf'].strip()) 
+        lista_municipio.append(retorno['municipio'].strip()) 
+        endereco_agencia = df_csv.loc[df_csv['MCU'] == int(mcu), 'ENDERECO'].iloc[0] 
+        complem_end_agencia = df_csv.loc[df_csv['MCU'] == int(mcu), 'COMPL_ENDERECO'].iloc[0] 
+        num_endereco = df_csv.loc[df_csv['MCU'] == int(mcu), 'Número'].iloc[0] 
+        bairro = df_csv.loc[df_csv['MCU'] == int(mcu), 'BAIRRO'].iloc[0] 
+        cep = df_csv.loc[df_csv['MCU'] == int(mcu), 'CEP'].iloc[0] 
 
-if pd.isna(endereco_agencia): 
-    endereco_agencia = '' 
-if pd.isna(complem_end_agencia): 
-    complem_end_agencia = '' 
-if pd.isna(num_endereco): 
-    num_endereco = '' 
-if pd.isna(bairro): 
-    bairro = '' 
-if pd.isna(cep): 
-    cep = '' 
+        if pd.isna(endereco_agencia): 
+            endereco_agencia = '' 
+        if pd.isna(complem_end_agencia): 
+            complem_end_agencia = '' 
+        if pd.isna(num_endereco): 
+            num_endereco = '' 
+        if pd.isna(bairro): 
+            bairro = '' 
+        if pd.isna(cep): 
+            cep = '' 
     
-lista_endereco_agencia.append(endereco_agencia) 
-lista_complem_end_agencia.append(complem_end_agencia) 
-lista_num_endereco.append(num_endereco) 
-lista_bairro.append(bairro) 
-lista_cep.append(cep) 
+        lista_endereco_agencia.append(endereco_agencia) 
+        lista_complem_end_agencia.append(complem_end_agencia) 
+        lista_num_endereco.append(num_endereco) 
+        lista_bairro.append(bairro) 
+        lista_cep.append(cep) 
 
 # Monta o dataframe final que vai no corpo do e-mail ---------------------------------------------------------- 
 dados = list(zip(lista_A2, lista_B, lista_status_atendimento, lista_data_atendimento, lista_atendente, lista_nome_agencia, lista_C, lista_uf, lista_municipio, lista_endereco_agencia, lista_complem_end_agencia, lista_num_endereco, lista_bairro, lista_cep)) 
